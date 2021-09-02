@@ -15,7 +15,7 @@
   }
   
   async function readContents(carName, file) {
-    const contents = await file.text().split('\n');
+    const contents = (await file.text()).split('\n');
     if(contents.length > 0) {
       contents.forEach(function(line) {
         if(line.indexOf("allowedPlaces") == 0) {
