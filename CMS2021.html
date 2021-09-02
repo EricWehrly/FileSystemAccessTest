@@ -1,0 +1,29 @@
+<ul id="carList"></ul>
+
+<script type="text/javascript">
+  var carList = document.getElementById("carList');
+                                        
+  function addCar(name, configCount) {    
+    const item = document.createElement("li");
+    item.innerHtml = `${name} configs: ${configCount}`;
+    // checkboxes for each type
+    carList.appendChild(item);
+  }
+  
+    async function listFiles() {
+        const dirHandle = await window.showDirectoryPicker();
+        for await (const entry of dirHandle.values()) {
+          if(entry.kind == "directory") {
+            var configCount = 0;
+            var subDir = await existingDirectoryHandle.getDirectoryHandle(entry.name);
+            for await (const subEntry of subDir.values()) {
+              if(subEntry.name.indexOf("config" == 0)) configCount++;
+            }
+            addCar(entry.name);
+          }
+        // console.log(entry.kind, entry.name);
+        }
+    }
+
+    listFiles();
+  </script>
