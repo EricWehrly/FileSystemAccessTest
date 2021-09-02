@@ -15,7 +15,7 @@
         for await (const entry of dirHandle.values()) {
           if(entry.kind == "directory") {
             var configCount = 0;
-            var subDir = await existingDirectoryHandle.getDirectoryHandle(entry.name);
+            var subDir = await dirHandle.getDirectoryHandle(entry.name);
             for await (const subEntry of subDir.values()) {
               if(subEntry.name.indexOf("config" == 0)) configCount++;
             }
