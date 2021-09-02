@@ -2,8 +2,18 @@
 
 <script type="text/javascript">
   var carList = document.getElementById("carList");
+  
+  function addCar(carName, directoryHandle, entry) {
+
+    var configNumber = getConfigNumber(entry.name);
+    const fileHandle = await directoryHandle.getFileHandle(entry.name);
+    const file = await fileHandle.getFile();
+    const contents = await file.text();
+    console.log(contents);
+    addCarListItem(carName, configNumber);
+  }
                                         
-  function addCar(name, configNumber) {    
+  function addCarListItem(name, configNumber) {    
     const item = document.createElement("li");
     item.innerHtml = `${name}`;
     if(configNumber != null) item.innerHtml += configNumber;
@@ -18,6 +28,15 @@
     return name.replace("config", "").replace(".txt", "");
   }
   
+  async function writeFile(fileHandle, contents) {
+    // Create a FileSystemWritableFileStream to write to.
+    const writable = await fileHandle.createWritable();
+    // Write the contents of the file to the stream.
+    await writable.write(contents);
+    // Close the file and write the contents to disk.
+    await writable.close();
+  }
+  
   async function listFiles() {
       const dirHandle = await window.showDirectoryPicker();
       for await (const entry of dirHandle.values()) {
@@ -25,8 +44,7 @@
           var configCount = 0;
           var subDir = await dirHandle.getDirectoryHandle(entry.name);
           for await (const subEntry of subDir.values()) {
-            var configNumber = getConfigNumber(subEntry.name);
-            addCar(entry.name, configNumber);
+            if(entry.name.indexOf("config" == 0)) addCar(entry.name, subDir, subEntry);
             // if(subEntry.name.indexOf("config" == 0)) configCount++;
           }
           // addCar(entry.name, configCount);
