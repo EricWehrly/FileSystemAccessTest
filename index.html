@@ -1,0 +1,7 @@
+<script type="text/javascript">
+  
+    const dirHandle = await window.showDirectoryPicker();
+    for await (const entry of dirHandle.values()) {
+      console.log(entry.kind, entry.name);
+    }
+  </script>
