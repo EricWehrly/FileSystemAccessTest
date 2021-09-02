@@ -1,9 +1,11 @@
+<button onClick="listFiles()">Select Directory</button>
+
 <ul id="carList"></ul>
 
 <script type="text/javascript">
   var carList = document.getElementById("carList");
   
-  function addCar(carName, directoryHandle, entry) {
+  async function addCar(carName, directoryHandle, entry) {
 
     var configNumber = getConfigNumber(entry.name);
     const fileHandle = await directoryHandle.getFileHandle(entry.name);
@@ -44,7 +46,7 @@
           var configCount = 0;
           var subDir = await dirHandle.getDirectoryHandle(entry.name);
           for await (const subEntry of subDir.values()) {
-            if(entry.name.indexOf("config" == 0)) addCar(entry.name, subDir, subEntry);
+            if(entry.name.indexOf("config" == 0)) await addCar(entry.name, subDir, subEntry);
             // if(subEntry.name.indexOf("config" == 0)) configCount++;
           }
           // addCar(entry.name, configCount);
@@ -52,6 +54,6 @@
       // console.log(entry.kind, entry.name);
       }
   }
-
+  
   listFiles();
 </script>
