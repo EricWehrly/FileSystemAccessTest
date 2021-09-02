@@ -10,9 +10,21 @@
     var configNumber = getConfigNumber(entry.name);
     const fileHandle = await directoryHandle.getFileHandle(entry.name);
     const file = await fileHandle.getFile();
-    const contents = await file.text();
-    console.log(contents);
+    await readContents(carName + configNumber, file);
     addCarListItem(carName, configNumber);
+  }
+  
+  async function readContents(carName, file) {
+    const contents = await file.text().split('\n');
+    if(contents.length > 0) {
+      contents.forEach(function(line) {
+        if(line.indexOf("allowedPlaces") == 0) {
+          var allowed = line.split("=")[1];
+          console.log(`${carName} allowed in ${allowed}`);
+        }
+      });
+    }
+    // console.log(contents);
   }
                                         
   function addCarListItem(name, configNumber) {    
@@ -46,7 +58,7 @@
           var configCount = 0;
           var subDir = await dirHandle.getDirectoryHandle(entry.name);
           for await (const subEntry of subDir.values()) {
-            if(entry.name.indexOf("config" == 0)) await addCar(entry.name, subDir, subEntry);
+            if(subEntry.name.indexOf("config") == 0) await addCar(entry.name, subDir, subEntry);
             // if(subEntry.name.indexOf("config" == 0)) configCount++;
           }
           // addCar(entry.name, configCount);
