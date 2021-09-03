@@ -7,13 +7,13 @@
 <script type="text/javascript">
   var carList = document.getElementById("carList");
   var allAlloweds = [];
+  var fileHandles = {};
   
   async function addCar(carName, directoryHandle, entry) {
 
     var configNumber = getConfigNumber(entry.name);
     const fileHandle = await directoryHandle.getFileHandle(entry.name);
-    const file = await fileHandle.getFile();
-    var alloweds = await readContents(carName + configNumber, file);
+    var alloweds = await readContents(carName + configNumber, fileHandle);
     var listItem = addCarListItem(carName, configNumber);
     
     addAlloweds(carName, listItem, alloweds);
@@ -25,17 +25,22 @@
         if(allowed.indexOf("Order") == 0) return;
         
         if(!allAlloweds.includes(allowed)) allAlloweds.push(allowed);
-        // addCheckBox(listItem, allowed);
       });
       addCheckboxes(carName, listItem, alloweds);
     }
   }
   
-  async function readContents(carName, file) {
-    const contents = (await file.text()).split('\n');
-    if(contents.length > 0) {
-      for(var lineNumber in contents) {
-        var line = contents[lineNumber];
+  async function readContents(carName, fileHandle) {
+    const file = await fileHandle.getFile();
+    const contents = await file.text();
+    fileHandles[carName] = {
+      "handle": fileHandle,
+      "contents": contents
+    }
+    const lines = contents.split('\n');
+    if(lines.length > 0) {
+      for(var lineNumber in lines) {
+        var line = lines[lineNumber];
         if(line.indexOf("allowedPlaces") == 0) {
           var allowed = line.split("=")[1];
           // console.log(`${carName} allowed in ${allowed}`);
@@ -47,7 +52,7 @@
                                         
   function addCarListItem(name, configNumber) {    
     const item = document.createElement("li");
-    item.innerHTML = `${name}`;
+    item.innerHTML = `${name} <br />`;
     if(configNumber != null) item.innerHTML += configNumber;
     carList.appendChild(item);
     
@@ -64,6 +69,7 @@
   function addCheckBox(carName, node, text, isChecked) {
     const check = document.createElement("input");
     const label = document.createElement("label");
+    check.onChange = allowedChecked;
     check.id = carName + text;
     label.innerHTML = text;
     label.for = check.id;
@@ -71,6 +77,12 @@
     check.checked = isChecked;
     node.appendChild(check);   
     node.appendChild(label);    
+  }
+  
+  function allowedChecked(one, two, three) {
+    console.log(one);
+    console.log(two);
+    console.log(three);
   }
   
   function getConfigNumber(name) {
@@ -96,14 +108,12 @@
           var subDir = await dirHandle.getDirectoryHandle(entry.name);
           for await (const subEntry of subDir.values()) {
             if(subEntry.name.indexOf("config") == 0) await addCar(entry.name, subDir, subEntry);
-            // if(subEntry.name.indexOf("config" == 0)) configCount++;
           }
-          // addCar(entry.name, configCount);
         }
-      // console.log(entry.kind, entry.name);
       }
     
     console.log(allAlloweds);
+    console.log(fileHandles);
   }
   
   listFiles();
