@@ -16,7 +16,7 @@
     var alloweds = await readContents(carName + configNumber, fileHandle);
     var listItem = addCarListItem(carName, configNumber);
     
-    addAlloweds(carName, listItem, alloweds);
+    addAlloweds(carName + configNumber, listItem, alloweds);
   }
   
   function addAlloweds(carName, listItem, alloweds) {
@@ -67,9 +67,9 @@
   }
                                         
   function addCarListItem(name, configNumber) {    
+    if(configNumber == null) configNumber = "";
     const item = document.createElement("li");
-    item.innerHTML = `${name} <br />`;
-    if(configNumber != null) item.innerHTML += configNumber;
+    item.innerHTML = `${name}${configNumber} <br />`;
     carList.appendChild(item);
     
     return item;
@@ -85,7 +85,6 @@
   function addCheckBox(carName, node, text, isChecked) {
     const check = document.createElement("input");
     const label = document.createElement("label");
-    // check.onchange = "allowedChecked(this, this.id)";
     check.addEventListener("change", allowedChecked);
     check.id = carName + '_' + text;
     label.innerHTML = text;
@@ -96,11 +95,16 @@
     node.appendChild(label);    
   }
   
-  function allowedChecked(one, two, three, four) {
-    console.log(one);
-    console.log(two);
-    console.log(three);
-    console.log(four);
+  function allowedChecked(event) {
+    // console.log(event);
+    var checkbox = event.srcElement;
+    var id = checkbox.id;
+    var checked = checkbox.checked;
+    console.log(`Checkbox ${id} checked: ${checked}`);
+    
+    var carName = id.split('_')[0];
+    var fileHandle = fileHandles[carName];
+    console.log(fileHandle);
   }
   
   function getConfigNumber(name) {
