@@ -21,7 +21,7 @@
   
   function addAlloweds(listItem, alloweds) {
     if(alloweds != null && alloweds.length > 0) {
-      addAlloweds.forEach(function(allowed) {
+      alloweds.forEach(function(allowed) {
         if(allowed.indexOf("Order") == 0) return;
         
         if(!allAlloweds.includes(allowed)) allAlloweds.push(allowed);
