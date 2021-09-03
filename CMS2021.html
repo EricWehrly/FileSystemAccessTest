@@ -100,11 +100,35 @@
     var checkbox = event.srcElement;
     var id = checkbox.id;
     var checked = checkbox.checked;
-    console.log(`Checkbox ${id} checked: ${checked}`);
+    // console.log(`Checkbox ${id} checked: ${checked}`);
     
     var carName = id.split('_')[0];
     var fileHandle = fileHandles[carName];
-    console.log(fileHandle);
+    // console.log(fileHandle);
+    
+    // var newAllowed = fileHandle["allowedOrders"];
+    // var newContents = fileHandle["contents"].replace(
+    var newContents = getNewContents(carName, fileHandle);
+  }
+  
+  function getNewAlloweds(carName, fileHandle) {
+    var alloweds = [];
+    for(var index in fileHandle["allowedOrders"]) {
+      alloweds.push(fileHandle["allowedOrders"][index]);
+    }
+    for(var index in allAlloweds) {
+      var allowed = allAlloweds[index];
+      var checkbox = document.getElementById(carName + "_" + allowed);
+      if(checkbox.checked) alloweds.push(allowed);
+    }
+    
+    return alloweds;
+  }
+  
+  function getNewContents(carName, fileHandle) {
+    
+    var newAlloweds = getNewAlloweds(carName, fileHandle);
+    console.log(newAlloweds);
   }
   
   function getConfigNumber(name) {
