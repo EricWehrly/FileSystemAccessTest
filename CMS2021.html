@@ -85,7 +85,7 @@
   function addCheckBox(carName, node, text, isChecked) {
     const check = document.createElement("input");
     const label = document.createElement("label");
-    check.onChange = "allowedChecked(this, this.id)";
+    check.onchange = "allowedChecked(this, this.id)";
     check.id = carName + '_' + text;
     label.innerHTML = text;
     label.for = check.id;
