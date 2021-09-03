@@ -33,10 +33,6 @@
   async function readContents(carName, fileHandle) {
     const file = await fileHandle.getFile();
     const contents = await file.text();
-    fileHandles[carName] = {
-      "handle": fileHandle,
-      "contents": contents
-    }
     const lines = contents.split('\n');
     if(lines.length > 0) {
       for(var lineNumber in lines) {
@@ -44,10 +40,30 @@
         if(line.indexOf("allowedPlaces") == 0) {
           var allowed = line.split("=")[1];
           // console.log(`${carName} allowed in ${allowed}`);
-          return allowed.split(",");
+          
+          var allowedItems = allowed.split(",");
+          
+          fileHandles[carName] = {
+            "handle": fileHandle,
+            "contents": contents,
+            "currentAllowedLine": line
+            "allowedOrders": getAllowedOrders(allowedItems)
+          };
+          
+          return allowedItems;
         }
       }
     }
+  }
+  
+  function getAllowedOrders(allowedItems) {
+    var allowedOrders = [];
+    for(var index in allowedItems) {
+      var item = allowedItems[index];
+      if(item.indexOf("Order") == 0) allowedOrders.push(item);
+    }
+    
+    return allowedOrders;
   }
                                         
   function addCarListItem(name, configNumber) {    
@@ -69,7 +85,7 @@
   function addCheckBox(carName, node, text, isChecked) {
     const check = document.createElement("input");
     const label = document.createElement("label");
-    check.onChange = allowedChecked;
+    check.onChange = allowedChecked(this, "derp", event);
     check.id = carName + text;
     label.innerHTML = text;
     label.for = check.id;
@@ -79,10 +95,11 @@
     node.appendChild(label);    
   }
   
-  function allowedChecked(one, two, three) {
+  function allowedChecked(one, two, three, four) {
     console.log(one);
     console.log(two);
     console.log(three);
+    console.log(four);
   }
   
   function getConfigNumber(name) {
