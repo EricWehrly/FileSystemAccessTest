@@ -95,7 +95,7 @@
     node.appendChild(label);    
   }
   
-  function allowedChecked(event) {
+  async function allowedChecked(event) {
     // console.log(event);
     var checkbox = event.srcElement;
     var id = checkbox.id;
@@ -109,6 +109,8 @@
     // var newAllowed = fileHandle["allowedOrders"];
     // var newContents = fileHandle["contents"].replace(
     var newContents = getNewContents(carName, fileHandle);
+    fileHandle.contents = newContents;
+    await writeFile(fileHandle.handle, newContents);
   }
   
   function getNewAlloweds(carName, fileHandle) {
@@ -129,6 +131,12 @@
     
     var newAlloweds = getNewAlloweds(carName, fileHandle);
     console.log(newAlloweds);
+    var newAllowedLine = "allowedPlaces=" + newAlloweds.join(",");
+    
+    var newContents = fileHandle["contents"].replace(fileHandle["currentAllowedLine"], newAllowedLine);
+    fileHandle["currentAllowedLine"] = newAllowedLine;
+    
+    return newContents;
   }
   
   function getConfigNumber(name) {
@@ -138,12 +146,11 @@
   }
   
   async function writeFile(fileHandle, contents) {
-    // Create a FileSystemWritableFileStream to write to.
     const writable = await fileHandle.createWritable();
-    // Write the contents of the file to the stream.
-    await writable.write(contents);
-    // Close the file and write the contents to disk.
-    await writable.close();
+    var result1 = await writable.write(contents);
+    var result2 = await writable.close();
+    
+    console.log(`Success? ${result1} ${result2}`);
   }
   
   async function listFiles() {
