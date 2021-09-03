@@ -16,10 +16,10 @@
     var alloweds = await readContents(carName + configNumber, file);
     var listItem = addCarListItem(carName, configNumber);
     
-    addAlloweds(listItem, alloweds);
+    addAlloweds(carName, listItem, alloweds);
   }
   
-  function addAlloweds(listItem, alloweds) {
+  function addAlloweds(carName, listItem, alloweds) {
     if(alloweds != null && alloweds.length > 0) {
       alloweds.forEach(function(allowed) {
         if(allowed.indexOf("Order") == 0) return;
@@ -27,7 +27,7 @@
         if(!allAlloweds.includes(allowed)) allAlloweds.push(allowed);
         // addCheckBox(listItem, allowed);
       });
-      addCheckboxes(listItem, alloweds);
+      addCheckboxes(carName, listItem, alloweds);
     }
   }
   
@@ -54,19 +54,23 @@
     return item;
   }
   
-  function addCheckboxes(node, alloweds) {
+  function addCheckboxes(carName, node, alloweds) {
     ["Auction", "Salon", "Junkyard", "Shed"].forEach(function(place) {
       var isAllowed = alloweds.includes(place);
-      addCheckBox(node, place, isAllowed);
+      addCheckBox(carName, node, place, isAllowed);
     });
   }
   
-  function addCheckBox(node, text, isChecked) {
-    const item = document.createElement("input");
-    item.type = "checkbox";
-    item.innerHTML = text;
-    item.checked = isChecked;
-    node.appendChild(item);    
+  function addCheckBox(carName, node, text, isChecked) {
+    const check = document.createElement("input");
+    const label = document.createElement("label");
+    check.id = carName + text;
+    label.innerHTML = text;
+    label.for = check.id;
+    check.type = "checkbox";
+    check.checked = isChecked;
+    node.appendChild(check);   
+    node.appendChild(label);    
   }
   
   function getConfigNumber(name) {
