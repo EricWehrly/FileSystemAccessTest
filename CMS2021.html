@@ -25,8 +25,9 @@
         if(allowed.indexOf("Order") == 0) return;
         
         if(!allAlloweds.includes(allowed)) allAlloweds.push(allowed);
-        addCheckBox(listItem, allowed);
+        // addCheckBox(listItem, allowed);
       });
+      addCheckboxes(listItem, alloweds);
     }
   }
   
@@ -37,12 +38,11 @@
         var line = contents[lineNumber];
         if(line.indexOf("allowedPlaces") == 0) {
           var allowed = line.split("=")[1];
-          console.log(`${carName} allowed in ${allowed}`);
+          // console.log(`${carName} allowed in ${allowed}`);
           return allowed.split(",");
         }
       }
     }
-    // console.log(contents);
   }
                                         
   function addCarListItem(name, configNumber) {    
@@ -54,10 +54,18 @@
     return item;
   }
   
-  function addCheckBox(node, text) {
-    const item = document.createElement("checkbox");
+  function addCheckboxes(node, alloweds) {
+    ["Auction", "Salon", "Junkyard", "Shed"].forEach(function(place) {
+      var isAllowed = alloweds.includes(place);
+      addCheckBox(node, place, isAllowed);
+    });
+  }
+  
+  function addCheckBox(node, text, isChecked) {
+    const item = document.createElement("input");
+    item.type = "checkbox";
     item.innerHTML = text;
-    item.checked = true;
+    item.checked = isChecked;
     node.appendChild(item);    
   }
   
