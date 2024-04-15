@@ -5,6 +5,20 @@
 <button onClick="listFiles()">Select Directory</button>
 
 <ul id="carList"></ul>
+    
+        <script type="module">
+            import { showDirectoryPicker } from 'https://cdn.jsdelivr.net/npm/file-system-access/lib/es2018.js';
+            const showPicker = async () => {
+                try {
+                    const handle = await showDirectoryPicker();
+                    console.log(handle);
+                } catch (e) {
+                    console.log(e);
+                }
+            };
+            window.showPicker = showPicker;
+          if(!window.showDirectoryPicker) window.showDirectoryPicker = showDirectoryPicker;
+        </script>
 
 <script type="text/javascript">
   var carList = document.getElementById("carList");
